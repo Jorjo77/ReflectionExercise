@@ -8,15 +8,20 @@ namespace CommandPattern.Core
 {
     public class CommandInterpreter : ICommandInterpreter
     {
+        private const string PostFix = "Command";
         public string Read(string args)
         {
             string[] splittesArgs = args.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-            string commandName = (splittesArgs[0] + "Command").ToLower();
+            string commandName = (splittesArgs[0] + "Command");
+            string commandTypeName = commandName + PostFix;
             string[] commandArgs = splittesArgs.Skip(1).ToArray();
-            //Намираме типа (стъпка 1)
+
+            //Намираме типа, като филтрираме и за интерфейса (стъпка 1)
             Type commandType = Assembly.GetCallingAssembly()
                 .GetTypes()
-                .FirstOrDefault(n => n.Name.ToLower() == commandName);
+                .Where(t=>t.GetInterfaces()
+                .Any(i=>i.Name == nameof(ICommand)))
+                .FirstOrDefault(n => n.Name == commandName);
 
             if (commandType == null)
             {
