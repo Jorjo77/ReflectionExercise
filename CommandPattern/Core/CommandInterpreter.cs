@@ -12,7 +12,7 @@ namespace CommandPattern.Core
         public string Read(string args)
         {
             string[] splittesArgs = args.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-            string commandName = (splittesArgs[0] + "Command");
+            string commandName = splittesArgs[0];
             string commandTypeName = commandName + PostFix;
             string[] commandArgs = splittesArgs.Skip(1).ToArray();
 
@@ -21,7 +21,7 @@ namespace CommandPattern.Core
                 .GetTypes()
                 .Where(t=>t.GetInterfaces()
                 .Any(i=>i.Name == nameof(ICommand)))
-                .FirstOrDefault(n => n.Name == commandName);
+                .FirstOrDefault(n => n.Name == commandTypeName);
 
             if (commandType == null)
             {
